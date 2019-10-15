@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+
+import json
+import re
+from sys import argv
+from subprocess import call
+from os.path import expanduser
+
+VSCODE_SETTINGS_FILE = expanduser('~/Library/Application Support/Code/User/settings.json')
+
+def change_terminal(terminal_theme):
+    # https://stackoverflow.com/q/32156678/11263030
+    terminal_script = [
+        'tell application "Terminal"',
+        'repeat with w from 1 to count windows',
+        'repeat with t from 1 to count tabs of window w',
+        'set current settings of tab t of window w to (first settings set whose name is "' + terminal_theme + '")',
+        'end repeat',
+        'end repeat',
+        'end tell'
+    ]
+    es = ['-e'] * len(terminal_script)
+    interleaved = [None] * (len(terminal_script) + len(es))
+    interleaved[::2] = es
+    interleaved[1::2] = terminal_script
+    command = ['osascript'] + interleaved
+    call(command)
+
+
+def change_vscode(vscode_theme, vscode_workbench):
+    data = {}
+    with open(VSCODE_SETTINGS_FILE) as f:
+        data = json.loads(f.read())
+    data["workbench.colorTheme"] = vscode_theme
+    if vscode_workbench:
+        data['workbench.colorCustomizations'] = vscode_workbench
+    elif 'workbench.colorCustomizations' in data:
+        del data['workbench.colorCustomizations']
+
+    with open(VSCODE_SETTINGS_FILE, 'w') as f:
+        json.dump(data, f, indent=' ' * 4)
+
+def get_configuration(theme_type):
+    configurations = {
+        'dark': {
+            'terminal': 'Dracula',
+            'vscode': 'Default Dark+',
+            'vscode_workbench': {
+                'statusBar.background': '#1A1A1A',
+                'statusBar.noFoldserBackground': '#212121',
+                'statusBar.debuggingBackground': '#263238'
+            }
+        },
+        'light': {
+            'terminal': 'Basic',
+            'vscode': 'GitHub Plus',
+            'vscode_workbench': None
+        }
+    }
+
+    if theme_type in configurations:
+        return configurations[theme_type]
+    return configurations['dark']
+
+
+if __name__ == '__main__':
+    configuration = get_configuration(argv[1])
+    change_terminal(configuration['terminal'])
+    change_vscode(configuration['vscode'], configuration['vscode_workbench'])
