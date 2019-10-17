@@ -55,7 +55,12 @@ def get_configuration(theme_type):
             'terminal': 'Basic',
             'vscode': 'GitHub Plus',
             'vscode_workbench': None
-        }
+        },
+	'solarized': {
+		'terminal': 'Solarized Light',
+		'vscode': 'Solarized Light',
+		'vscode_workbench': None
+	},
     }
 
     if theme_type in configurations:
