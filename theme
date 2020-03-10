@@ -48,18 +48,24 @@ def get_configuration(theme_type):
             'vscode_workbench': {
                 'statusBar.background': '#1A1A1A',
                 'statusBar.noFoldserBackground': '#212121',
-                'statusBar.debuggingBackground': '#263238'
+                'statusBar.debuggingBackground': '#263238',
+		'bookmarks.lineBackground': '#c4b9b7',
             }
         },
         'light': {
             'terminal': 'Basic',
             'vscode': 'GitHub Plus',
-            'vscode_workbench': None
+            'vscode_workbench': {
+                'bookmarks.lineBackground': '#c4b9b7',
+            }
         },
 	'solarized': {
 		'terminal': 'Solarized Light',
 		'vscode': 'Solarized Light',
-		'vscode_workbench': None
+                'vscode_workbench': {
+                    'bookmarks.lineBackground': '#c4b9b7',
+                }
+
 	},
     }
 
